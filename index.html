@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Divine Singers ID Card</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="arc" aria-hidden="true"></div>
+  <h1>Divine Singers ID Card</h1>
+  <p>Divine Solution Parish &middot; Celestial Church of Christ.<br>Fill in your details, register to get your number, then preview and download.</p>
+</header>
+
+<main class="layout">
+  <form id="idForm" class="panel" autocomplete="off">
+    <div class="meter" aria-hidden="true"><span id="meterFill"></span></div>
+    <p id="meterText" class="meter-text">0% complete</p>
+
+    <fieldset>
+      <legend><b>1</b> About you</legend>
+      <label>Full name
+        <input type="text" id="nameInput" placeholder="e.g. Grace Adeyemi" required>
+      </label>
+      <label>Phone number
+        <input type="tel" id="phoneInput" placeholder="e.g. 0803 000 0000">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend><b>2</b> Your place in the choir</legend>
+      <div class="field">
+        <span class="lbl">Post in choir <span class="hint">(tick all that apply)</span></span>
+        <div id="postChips" class="chips"></div>
+      </div>
+      <label>Member ID <span class="hint">(made when you register)</span>
+        <input type="text" id="idInput" readonly value="Not registered yet">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend><b>3</b> Photo and signature</legend>
+      <label>Passport photo
+        <input type="file" id="photoInput" accept="image/*">
+      </label>
+      <div id="photoTools" class="tools" hidden>
+        <label>Zoom <input type="range" id="zoomR" min="1" max="3" step="0.01" value="1"></label>
+        <label>Left / right <input type="range" id="xR" min="0" max="100" value="50"></label>
+        <label>Up / down <input type="range" id="yR" min="0" max="100" value="30"></label>
+      </div>
+      <label>Signature, option 1: upload a photo <span class="hint">(sign on white paper, then crop to the signature)</span>
+        <input type="file" id="sigInput" accept="image/*">
+      </label>
+      <button type="button" id="drawSigBtn" class="ghost full">Signature, option 2: draw it here with a pen or finger</button>
+      <div id="sigTools" class="tools" hidden>
+        <button type="button" id="recropBtn" class="ghost">Crop again</button>
+        <label>Cleanup <span class="hint">(raise to remove specks, lower if the signature looks faint)</span>
+          <input type="range" id="sigR" min="8" max="60" value="22">
+        </label>
+      </div>
+    </fieldset>
+
+    <p id="status" class="status"></p>
+    <div class="actions">
+      <button type="button" id="registerBtn">Register &amp; get ID</button>
+      <button type="button" id="downloadBtn">Preview &amp; download PDF</button>
+      <button type="button" id="printBtn" class="ghost">Print</button>
+      <button type="button" id="resetBtn" class="ghost">Clear</button>
+    </div>
+  </form>
+
+  <section class="stage" aria-label="ID card preview, front and back">
+    <div class="side">
+      <p class="side-label">Front</p>
+      <div class="tilt">
+        <div class="card" id="card">
+          <img class="wm" alt="">
+          <div class="card-head">
+            <div class="logo-wrap">
+              <img id="logoImg" alt="CCC logo">
+              <span id="logoFallback" class="logo-fallback" hidden>CCC</span>
+            </div>
+            <div class="head-text">
+              <strong>DIVINE SINGERS</strong>
+              <span>No. 3 D.S.P Street, Ungwan Doma<br>Kaduna Epres Way, Kaduna.</span>
+              <small>Celestial Church of Christ</small>
+            </div>
+          </div>
+          <div class="strip"></div>
+          <div class="card-body">
+            <div class="photo">
+              <img id="photoImg" alt="" hidden>
+              <span id="photoHint">Passport</span>
+            </div>
+            <dl class="details">
+              <dt>Name</dt><dd id="nameOut" class="name">Your name</dd>
+              <dt>Phone</dt><dd id="phoneOut">Phone number</dd>
+              <dt>Post</dt><dd id="postFrontOut">Not set</dd>
+              <dt>Member ID</dt><dd id="idFrontOut">Not set</dd>
+            </dl>
+          </div>
+          <div class="card-foot">Choir member ID &middot; valid for choir activities only</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="side">
+      <p class="side-label">Back</p>
+      <div class="tilt">
+        <div class="card" id="cardBack">
+          <img class="wm" alt="">
+          <div class="back-head">
+            <strong>DIVINE SINGERS</strong>
+            <span>Celestial Church of Christ</span>
+          </div>
+          <div class="strip"></div>
+          <div class="back-body">
+            <p class="terms"><strong>PROPERTY OF DIVINE SINGERS</strong>This card belongs to the choir and is not transferable.</p>
+            <div class="sig">
+              <div class="sig-box">
+                <img id="sigImg" alt="Signature" hidden>
+                <span id="sigHint">Signature</span>
+              </div>
+              <span class="sig-line"></span>
+              <small>Member's signature</small>
+            </div>
+          </div>
+          <div class="card-foot back-foot">If found, please return to:<br>No. 3 D.S.P Street, Ungwan Doma<br>Kaduna Epres Way, Kaduna.<br>Or call: +234 706 593 9046<br>+234 706 382 6150</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="drawModal" class="modal" hidden>
+  <div class="modal-box wide" role="dialog" aria-modal="true" aria-label="Draw signature">
+    <h2>Draw your signature</h2>
+    <p>Sign inside the box with your pen, finger or mouse.</p>
+    <div class="pad-wrap"><canvas id="padCanvas" width="640" height="260"></canvas></div>
+    <div class="actions">
+      <button type="button" id="padOk">Use signature</button>
+      <button type="button" id="padClear" class="ghost">Clear</button>
+      <button type="button" id="padCancel" class="ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="cropModal" class="modal" hidden>
+  <div class="modal-box wide" role="dialog" aria-modal="true" aria-label="Crop signature">
+    <h2>Crop your signature</h2>
+    <p>Drag over the signature to draw a box around it. Draw again to redo.</p>
+    <div class="crop-wrap"><canvas id="cropCanvas"></canvas></div>
+    <div class="actions">
+      <button type="button" id="cropOk">Use this area</button>
+      <button type="button" id="cropCancel" class="ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="previewModal" class="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-label="Card preview">
+    <h2>Check your card</h2>
+    <p>Look over both sides. Download the PDF when they are correct.</p>
+    <div class="preview-sides">
+      <figure><img id="prevFront" alt="Front of the card"><figcaption>Front</figcaption></figure>
+      <figure><img id="prevBack" alt="Back of the card"><figcaption>Back</figcaption></figure>
+    </div>
+    <div class="actions">
+      <button type="button" id="confirmPdfBtn">Download PDF</button>
+      <button type="button" id="cancelPdfBtn" class="ghost">Back to edit</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>

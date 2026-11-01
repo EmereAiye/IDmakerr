@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600&display=swap');
+
+:root {
+  --night: #0b1533; --deep: #1b2f6b; --ink: #14284b;
+  --sky: #e3eefb; --mist: #f4f8fd; --gold: #d4a937; --line: #cfdcee; --white: #fff;
+  --rainbow: linear-gradient(90deg, #e53935, #fb8c00, #fdd835, #43a047, #1e88e5, #3949ab, #8e24aa);
+  --radius: 16px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink);
+  font-family: Outfit, "Segoe UI", sans-serif;
+  background: linear-gradient(#fbf8f1, #eaf1fb) fixed; }
+
+/* ---------- Hero: night sky with a rising rainbow ---------- */
+.hero { position: relative; overflow: hidden; text-align: center; color: var(--white);
+  padding: 54px 16px 250px; background: linear-gradient(#0b1533, #1b2f6b 70%, #2c4a99); }
+.hero::before { content: ""; position: absolute; inset: 0; animation: twinkle 4s ease-in-out infinite alternate;
+  background:
+    radial-gradient(2px 2px at 10% 25%, #fff, transparent), radial-gradient(1.5px 1.5px at 24% 62%, #fff, transparent),
+    radial-gradient(2px 2px at 38% 18%, #ffe9a8, transparent), radial-gradient(1.5px 1.5px at 55% 40%, #fff, transparent),
+    radial-gradient(2px 2px at 70% 22%, #fff, transparent), radial-gradient(1.5px 1.5px at 84% 55%, #ffe9a8, transparent),
+    radial-gradient(2px 2px at 92% 15%, #fff, transparent); }
+.arc { position: absolute; left: 50%; bottom: -2px; width: min(640px, 130vw); height: min(320px, 65vw);
+  transform: translateX(-50%); border-radius: 999px 999px 0 0; opacity: 0.8;
+  animation: rise 1.6s ease-out both;
+  background: radial-gradient(circle at 50% 100%, transparent 0 34%, #8e24aa 34% 40%, #3949ab 40% 46%, #1e88e5 46% 52%,
+    #43a047 52% 58%, #fdd835 58% 64%, #fb8c00 64% 70%, #e53935 70% 76%, transparent 76%); }
+.hero h1 { position: relative; margin: 0 0 10px; font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2.2rem, 7vw, 3.8rem); line-height: 1.05; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.4); }
+.hero p { position: relative; max-width: 520px; margin: 0 auto; color: #d6e2fa; }
+@keyframes twinkle { from { opacity: 0.35; } to { opacity: 1; } }
+@keyframes rise { from { transform: translate(-50%, 60%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 0.8; } }
+
+/* ---------- Layout ---------- */
+.layout { position: relative; display: grid; grid-template-columns: minmax(290px, 380px) 1fr; gap: 30px;
+  max-width: 1120px; margin: -150px auto 50px; padding: 0 16px; align-items: start; }
+
+.panel { position: relative; overflow: hidden; display: grid; gap: 18px; padding: 26px 22px 22px;
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: 0 18px 40px rgba(20, 40, 75, 0.14); }
+.panel::before { content: ""; position: absolute; inset: 0 0 auto; height: 5px; background: var(--rainbow); }
+
+.meter { height: 8px; border-radius: 99px; background: var(--sky); overflow: hidden; }
+.meter span { display: block; height: 100%; width: 0; background: var(--rainbow); transition: width 0.4s ease; }
+.meter-text { margin: -10px 0 0; font-size: 0.8rem; color: #4a5f82; }
+
+fieldset { display: grid; gap: 12px; margin: 0; padding: 0; border: 0; min-width: 0; }
+legend { display: flex; align-items: center; gap: 8px; padding: 0; margin-bottom: 10px;
+  font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.3rem; font-weight: 700; }
+legend b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--deep), #8e24aa); color: var(--white);
+  font: 600 0.8rem Outfit, sans-serif; }
+label { display: grid; gap: 6px; font-size: 0.88rem; font-weight: 500; }
+.hint { font-weight: 400; color: #6b7d9c; }
+
+input, select { font: inherit; min-width: 0; padding: 11px 12px; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px; background: var(--mist);
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s; }
+input:focus, select:focus { outline: none; border-color: #1e88e5; background: var(--white);
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.22); }
+input[readonly] { font-weight: 600; letter-spacing: 0.04em; color: var(--deep); }
+input[type="file"]::file-selector-button { margin-right: 10px; padding: 8px 12px; border: 0; border-radius: 8px;
+  background: var(--deep); color: var(--white); font: inherit; cursor: pointer; }
+
+.status { margin: 0; font-size: 0.85rem; color: #4a5f82; }
+.status.bad { color: #a12a2a; font-weight: 600; }
+.status.good { color: #1d6b3a; font-weight: 600; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+button { font: inherit; font-weight: 600; padding: 11px 18px; border-radius: 10px; cursor: pointer;
+  border: 2px solid var(--deep); background: var(--deep); color: var(--white);
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s; }
+button:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(20, 40, 75, 0.25); }
+button:active { transform: translateY(0); }
+button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+button:disabled { opacity: 0.6; cursor: wait; transform: none; }
+button.ghost { background: transparent; color: var(--ink); }
+#registerBtn { flex: 1 1 100%; border: 0; font-size: 1.05rem; padding: 14px;
+  background: linear-gradient(135deg, #d4a937, #f2d675); color: #2b2100; }
+
+/* ---------- Cards: portrait ID size (54 x 85.6 mm) ---------- */
+:root { --w: min(320px, calc(100vw - 32px)); }
+.stage { position: sticky; top: 16px; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 22px; }
+.side-label { margin: 0 0 6px; font-weight: 600; font-size: 0.85rem; color: #4a5f82; }
+.tilt { position: relative; width: var(--w); border-radius: calc(var(--w) * 0.05);
+  transition: transform 0.18s ease-out; will-change: transform; }
+.tilt::after { content: ""; position: absolute; inset: 0; border-radius: calc(var(--w) * 0.05); pointer-events: none;
+  opacity: 0; transition: opacity 0.2s;
+  background: linear-gradient(110deg, transparent calc(var(--sx, 50%) - 25%), rgba(255,255,255,0.45), transparent calc(var(--sx, 50%) + 25%)); }
+.tilt:hover::after { opacity: 1; }
+.capturing .tilt { transform: none !important; }
+.capturing #sigHint { visibility: hidden; }
+
+.card { --u: calc(var(--w) / 100); position: relative; display: flex; flex-direction: column; box-sizing: border-box;
+  width: var(--w); height: calc(var(--u) * 158.5); overflow: hidden; background: #fff; border: 1px solid #e6dcc0;
+  border-radius: calc(var(--u) * 5); box-shadow: 0 14px 32px rgba(20, 40, 75, 0.22); }
+.card-head { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none;
+  gap: calc(var(--u) * 1.4); height: calc(var(--u) * 48); text-align: center;
+  background: linear-gradient(135deg, #0b1533, #1b2f6b); color: #fff; }
+.strip { flex: none; height: calc(var(--u) * 2); background: var(--rainbow); }
+.logo-wrap { display: grid; place-items: center; flex: none; box-sizing: border-box; overflow: hidden;
+  width: calc(var(--u) * 34); height: calc(var(--u) * 19.6); padding: calc(var(--u) * 0.9);
+  border-radius: calc(var(--u) * 3); background: #fff; }
+.logo-wrap img { width: 100%; height: 100%; }
+.logo-fallback { font-weight: 800; color: var(--ink); }
+.head-text { display: grid; justify-items: center; gap: calc(var(--u) * 0.5); line-height: 1.15; }
+.head-text strong, .back-head strong { font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: calc(var(--u) * 7.4); letter-spacing: 0.06em; }
+.head-text span, .back-head span { font-size: calc(var(--u) * 3.6); color: #f0d98f; }
+.head-text small { font-size: calc(var(--u) * 3.2); color: #cfe0ff; }
+
+.card-body { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: calc(var(--u) * 3); padding: 0 calc(var(--u) * 5); }
+.photo { display: grid; place-items: center; flex: none; box-sizing: border-box;
+  width: calc(var(--u) * 34); height: calc(var(--u) * 45.3); padding: calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 2); background: linear-gradient(135deg, #e53935, #fdd835, #43a047, #1e88e5, #8e24aa); }
+.photo img, .photo span { width: 100%; height: 100%; border-radius: calc(var(--u) * 1.4); }
+.photo span { display: grid; place-items: center; background: var(--sky); color: #6b7d9c; font-size: calc(var(--u) * 3.4); }
+.photo [hidden], .sig-box [hidden] { display: none; }
+
+.details { display: grid; justify-items: center; text-align: center; width: 100%; margin: 0; }
+.details dt { font-size: calc(var(--u) * 2.8); color: #6b7d9c; text-transform: uppercase; letter-spacing: 0.06em; }
+.details dd { margin: 0 0 calc(var(--u) * 1.2); font-size: calc(var(--u) * 4.6); font-weight: 600; overflow-wrap: anywhere; line-height: 1.15; }
+.details dd.name { font-family: "Cormorant Garamond", Georgia, serif; font-size: calc(var(--u) * 6.4); font-weight: 700; }
+.details dd.long { font-size: calc(var(--u) * 3.6); }
+.card-foot { display: grid; place-items: center; flex: none; height: calc(var(--u) * 10); padding: 0 calc(var(--u) * 4);
+  background: var(--sky); font-size: calc(var(--u) * 2.7); text-align: center; line-height: 1.3; }
+
+.back-head { display: grid; justify-items: center; align-content: center; flex: none; gap: calc(var(--u) * 1);
+  height: calc(var(--u) * 26); padding: 0 calc(var(--u) * 4); text-align: center;
+  background: linear-gradient(135deg, #0b1533, #1b2f6b); color: #fff; }
+.back-body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center;
+  gap: calc(var(--u) * 6); padding: 0 calc(var(--u) * 6); }
+.sig { display: block; }
+.sig-box { position: relative; height: calc(var(--u) * 28); }
+.sig-box img { display: block; width: 100%; height: 100%; }
+.sig-box span { position: absolute; inset: 0; display: grid; place-items: center; color: #b5c2d8; font-size: calc(var(--u) * 3.4); }
+.sig-line { display: block; height: 1px; background: var(--ink); }
+.sig small { display: block; margin-top: calc(var(--u) * 1); font-size: calc(var(--u) * 2.8); color: #6b7d9c; text-align: center; }
+
+.tools { display: grid; gap: 8px; }
+.tools[hidden] { display: none; }
+.tools label { font-weight: 400; }
+input[type="range"] { padding: 0; accent-color: #1e88e5; }
+
+/* ---------- Preview before download ---------- */
+.modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px;
+  overflow: auto; background: rgba(11, 21, 51, 0.7); }
+.modal[hidden] { display: none; }
+.modal-box { width: 100%; max-width: 420px; max-height: 92vh; overflow: auto; padding: 20px;
+  background: var(--white); border-radius: var(--radius); }
+.modal-box h2 { margin: 0 0 4px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.6rem; }
+.modal-box p { margin: 0; color: #4a5f82; font-size: 0.9rem; }
+.preview-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+.preview-sides figure { margin: 0; }
+.preview-sides img { display: block; width: 100%; border: 1px solid var(--line); border-radius: 12px; }
+.preview-sides figcaption { margin-top: 4px; font-size: 0.8rem; color: #6b7d9c; }
+
+.fx { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; margin-top: -170px; }
+  .stage { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero::before, .arc { animation: none; }
+  .tilt, button, .meter span { transition: none; }
+}
+@media print {
+  body { background: #fff; }
+  .hero, .panel, .side-label, .modal, .fx { display: none; }
+  .layout { display: block; margin: 0; }
+  .stage { position: static; align-items: flex-start; }
+  .card { box-shadow: none; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+@media print {
+  :root { --w: 54mm; }
+  #sigHint { visibility: hidden; }
+}
+
+/* ---------- Post chips (tick more than one) ---------- */
+.field { display: grid; gap: 8px; }
+.lbl { font-size: 0.88rem; font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; display: inline-block; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span { display: inline-block; padding: 8px 13px; border: 1px solid var(--line); border-radius: 99px;
+  background: var(--mist); font-size: 0.85rem; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+.chip:hover span { border-color: #1e88e5; }
+.chip input:checked + span { background: var(--deep); border-color: var(--deep); color: #fff; }
+.chip input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
+.details dd.long { font-size: calc(var(--u) * 2.8); }
+
+/* ---------- Address and contact lines ---------- */
+.head-text span { font-size: calc(var(--u) * 3); line-height: 1.2; }
+.card-foot.back-foot { height: calc(var(--u) * 24); font-size: calc(var(--u) * 2.9); line-height: 1.45; }
+
+/* ---------- Faint CCC logo watermark behind the details ---------- */
+.wm { position: absolute; z-index: 0; left: calc(var(--u) * 10); width: calc(var(--u) * 80);
+  height: calc(var(--u) * 44.7); opacity: 0.12; pointer-events: none; }
+#card .wm { top: calc(var(--u) * 72); }
+#cardBack .wm { top: calc(var(--u) * 62); }
+.card > *:not(.wm) { position: relative; z-index: 1; }
+
+/* ---------- Back of card: ownership line ---------- */
+.terms { margin: 0; text-align: center; font-size: calc(var(--u) * 3.1); line-height: 1.4; color: var(--ink); }
+.terms strong { display: block; margin-bottom: calc(var(--u) * 1); font-size: calc(var(--u) * 3.5);
+  letter-spacing: 0.08em; color: var(--deep); }
+
+/* ---------- Signature crop box ---------- */
+.modal-box.wide { max-width: 720px; }
+.crop-wrap { display: grid; place-items: center; margin: 12px 0; overflow: hidden; border-radius: 12px; background: #111; }
+#cropCanvas { display: block; max-width: 100%; cursor: crosshair; touch-action: none; }
+
+/* ---------- Draw-your-signature pad ---------- */
+.full { width: 100%; }
+.pad-wrap { margin: 12px 0; overflow: hidden; border: 2px dashed var(--line); border-radius: 12px;
+  background: linear-gradient(to bottom, transparent 72%, #cfdcee 72%, #cfdcee calc(72% + 1px), transparent calc(72% + 1px)), #fff; }
+#padCanvas { display: block; width: 100%; height: auto; cursor: crosshair; touch-action: none; }
