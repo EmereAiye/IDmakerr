@@ -2,12 +2,11 @@
   const $ = (id) => document.getElementById(id);
 
   // ---------------- SETTINGS ----------------
-  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbx3q-C0yoBOKAAq35uYiwfe6MJ2XnKO0C4l6lcF-sQZDgU2oj3x76Ig0FNznAxAGTNi9g/exec';
+  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbz3XfFbuGvFAxYEdFWqAuB916A5u-eo2TmFzgG0HT3wJfJeA5p91Fgv1xMvTI4AsZCaOA/exec';
   const LOGO_DATA = 'data:image/png;base64,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';
   const ID_PREFIX = 'DS';
   const POSTS = ['Choir Master', 'Music Director', 'Lead Vocalist', 'Secretary', 'Treasurer',
     'Talking Drummer', 'Set Drummer', 'Keyboardist', 'Guitarist', 'Instrumentalist', 'Back-up Singer', 'Chorister'];
-  const MAX_POSTS = 2;                                           // a member may hold at most two posts
   const RESERVED = { 'Choir Master': 1, 'Music Director': 2 };   // always 001 and 002; everyone else follows in order of registration
   // ------------------------------------------
 
@@ -82,20 +81,6 @@
     const res = await fetch(BACKEND_URL, { method: 'POST', body: JSON.stringify(d) });
     return res.json();
   }
-  // Send pictures to the Google Drive folder through the script (the member must already be registered).
-  // Returns true = saved, false = failed, null = nothing to send (or test mode)
-  async function sendImages(extra) {
-    if (!BACKEND_URL) return null;
-    const d = Object.assign({ action: 'upload', phone: $('phoneInput').value.trim(),
-      passport: $('photoImg').hidden ? '' : $('photoImg').src,
-      signature: $('sigImg').hidden ? '' : $('sigImg').src }, extra || {});
-    if (!d.passport && !d.signature && !d.front && !d.back) return null;
-    try {
-      const res = await fetch(BACKEND_URL, { method: 'POST', body: JSON.stringify(d) });
-      const r = await res.json();
-      return !!r.ok;
-    } catch (err) { return false; }
-  }
 
   $('registerBtn').addEventListener('click', async () => {
     const d = { name: $('nameInput').value.trim(), phone: $('phoneInput').value.trim(),
@@ -112,29 +97,15 @@
       else {
         showId(r.number);
         celebrate();
-        const saved = await sendImages();                          // passport and signature go to Google Drive
-        say((r.existing ? 'This phone number is already registered. Showing the same ID.'
-                        : 'Registered. Preview and download your card.') +
-            (saved === true ? ' Your pictures were saved.'
-             : saved === false ? ' Your pictures could not be saved yet. They will be sent again when you download the PDF.' : ''), 'good');
+        say(r.existing ? 'This phone number is already registered. Showing the same ID.'
+                       : 'Registered. Preview and download your card.', 'good');
       }
     } catch (err) {
       say('Could not reach the online list. Check the internet and try again.', 'bad');
     }
     btn.disabled = false; btn.textContent = 'Register & get ID';
   });
-  const postMsg = $('postMsg');
-  const postNote = (m) => { postMsg.textContent = m || ''; postMsg.hidden = !m; };
-  // When two posts are ticked, the other boxes are switched off so a third cannot be chosen
-  function syncPostLimit() {
-    const full = getPosts().length >= MAX_POSTS;
-    chipBox.querySelectorAll('input').forEach((i) => {
-      i.disabled = full && !i.checked;
-      i.parentElement.classList.toggle('off', i.disabled);
-    });
-  }
   chipBox.addEventListener('change', (e) => {
-    postNote('');
     // One person cannot be both Choir Master and Music Director (each has its own number)
     if (e.target.checked && RESERVED[e.target.value]) {
       chipBox.querySelectorAll('input:checked').forEach((i) => {
@@ -144,13 +115,6 @@
         }
       });
     }
-    // Never more than two posts
-    if (getPosts().length > MAX_POSTS) {
-      e.target.checked = false;
-      postNote('You can choose only ' + MAX_POSTS + ' posts. Untick one first to choose another.');
-      say('You can choose only ' + MAX_POSTS + ' posts.', 'bad');
-    }
-    syncPostLimit();
     unregister(); refreshCard();
   });
   $('phoneInput').addEventListener('input', unregister);
@@ -185,72 +149,48 @@
     $('photoImg').hidden = false; $('photoHint').hidden = true;
     updateMeter();
   }
-  // ---- Passport check: only a passport photo on a WHITE background is accepted ----
-  // whiteMin / whiteSpread: a pixel counts as white when R, G and B are all at least whiteMin and close to each other
-  // whiteShare: how much of the top and side edges must be white (hair or a shoulder may touch the edge)
+  // ---- Passport check: ordinary photos are rejected ----
+  // plainShare: how much of the top and side edges must be one plain colour (a passport has a plain wall behind it)
+  // colourGap: how far a colour may drift and still count as "the same" (raise it if real passports get rejected)
   // faceMin: the face must be at least this share of the photo's width (head and shoulders, not a far-away shot)
-  // ratio: width / height must look like a portrait passport (35 x 45 mm is about 0.78); wide or very tall pictures are rejected
-  const PASSPORT = { minSide: 200, whiteMin: 195, whiteSpread: 45, whiteShare: 0.75, faceMin: 0.25,
-                     ratioMin: 0.62, ratioMax: 1.05, bottomFill: 0.4, headFill: 0.3, subjectMin: 0.2 };
-  const NOT_WHITE = 'REJECTED: the background is not white. A passport photo must be taken against a plain white background.';
-  const NOT_PASSPORT = 'REJECTED: this is not a passport photo. Upload a passport-style picture only: head and shoulders, ' +
-    'facing the camera, in garment, on a white background. Full pictures and ordinary pictures are not accepted.';
+  const PASSPORT = { minSide: 150, maxWide: 1.2, plainShare: 0.55, colourGap: 90, faceMin: 0.15 };
+  const NOT_PASSPORT = 'This does not look like a passport photo. Use one that faces the camera, shows head and shoulders, ' +
+    'has a plain background, and is in garment.';
+  const rejected = (why) => NOT_PASSPORT + ' [' + why + ']';   // the tag in brackets shows which check failed
 
-  // Share of pixels in a rectangle (fractions of width and height) that are NOT white
-  function nonWhiteShare(mask, w, h, x0, x1, y0, y1) {
-    let n = 0, t = 0;
-    for (let y = Math.floor(h * y0); y < Math.ceil(h * y1); y++) {
-      for (let x = Math.floor(w * x0); x < Math.ceil(w * x1); x++) { t++; if (!mask[y * w + x]) n++; }
+  function plainBackground(px, w, h) {
+    const band = 0.12, vals = [];
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const top = y < h * band, side = (x < w * band || x >= w * (1 - band)) && y < h * 0.7;
+        if (top || side) { const i = (y * w + x) * 4; vals.push([px[i], px[i + 1], px[i + 2]]); }
+      }
     }
-    return t ? n / t : 0;
+    const med = (c) => { const a = vals.map((v) => v[c]).sort((p, q) => p - q); return a[a.length >> 1]; };
+    const m = [med(0), med(1), med(2)];
+    let near = 0;
+    vals.forEach((v) => { if (Math.hypot(v[0] - m[0], v[1] - m[1], v[2] - m[2]) < PASSPORT.colourGap) near++; });
+    return near / vals.length;
   }
 
   async function passportProblem(im) {
-    if (Math.min(im.width, im.height) < PASSPORT.minSide) return 'REJECTED: this photo is too small or blurry. Choose a clearer passport photo.';
-    const ratio = im.width / im.height;
-    if (ratio < PASSPORT.ratioMin || ratio > PASSPORT.ratioMax) return NOT_PASSPORT;   // wide or full-length pictures
-
-    const w = 96, h = Math.max(1, Math.round(96 * im.height / im.width));
+    if (Math.min(im.width, im.height) < PASSPORT.minSide) return 'This photo is too small or blurry. Choose a clearer passport photo.';
+    if (im.width > im.height * PASSPORT.maxWide) return rejected('wide picture');   // clearly wide pictures are ordinary photos
     const c = document.createElement('canvas');
-    c.width = w; c.height = h;
+    c.width = 96; c.height = Math.max(1, Math.round(96 * im.height / im.width));
     const g = c.getContext('2d');
-    g.drawImage(im, 0, 0, w, h);
-    const px = g.getImageData(0, 0, w, h).data;
-    const white = new Uint8Array(w * h);                              // 1 = white pixel
-    for (let i = 0; i < w * h; i++) {
-      const r = px[i * 4], gr = px[i * 4 + 1], b = px[i * 4 + 2];
-      white[i] = Math.min(r, gr, b) >= PASSPORT.whiteMin && Math.max(r, gr, b) - Math.min(r, gr, b) <= PASSPORT.whiteSpread ? 1 : 0;
-    }
-
-    // 1. White background: the top strip and the upper left and right edges must be white
-    let edge = 0, edgeWhite = 0;
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const top = y < h * 0.1, side = (x < w * 0.12 || x >= w * 0.88) && y < h * 0.55;
-        if (top || side) { edge++; edgeWhite += white[y * w + x]; }
-      }
-    }
-    if (edgeWhite / edge < PASSPORT.whiteShare) return NOT_WHITE;
-
-    // 2. Head and shoulders: a head in the top middle, and shoulders or garment filling the bottom
-    if (nonWhiteShare(white, w, h, 0, 1, 0, 1) < PASSPORT.subjectMin) return NOT_PASSPORT;        // person too small or missing
-    if (nonWhiteShare(white, w, h, 0.3, 0.7, 0.08, 0.4) < PASSPORT.headFill) return NOT_PASSPORT;  // no head where it should be
-    if (nonWhiteShare(white, w, h, 0.1, 0.9, 0.88, 1) < PASSPORT.bottomFill) return NOT_PASSPORT;  // no shoulders: full-length or cut-out picture
-
-    // 3. Exactly one face, large enough (only in browsers that have a face detector; the checks above always apply)
-    if ('FaceDetector' in window) {
+    g.drawImage(im, 0, 0, c.width, c.height);
+    if (plainBackground(g.getImageData(0, 0, c.width, c.height).data, c.width, c.height) < PASSPORT.plainShare) return rejected('background not plain');
+    if ('FaceDetector' in window) {                                    // only some browsers have this; the checks above still apply without it
       try {
         const faces = await new FaceDetector({ fastMode: true, maxDetectedFaces: 5 }).detect(im);
-        if (faces.length !== 1) return NOT_PASSPORT;
-        if (faces[0].boundingBox.width < im.width * PASSPORT.faceMin) return NOT_PASSPORT;
+        // if no face is found we let it through (the detector can miss real faces); a face that is found must be close up
+        const biggest = faces.reduce((m, f) => Math.max(m, f.boundingBox.width), 0);
+        if (faces.length && biggest < im.width * PASSPORT.faceMin) return rejected('face too small');
       } catch (err) { /* face check not available here */ }
     }
     return '';
   }
-
-  // The rejection reason is shown at the top of the passport box, above the upload button
-  const photoError = $('photoError');
-  const photoNote = (m) => { photoError.textContent = m || ''; photoError.hidden = !m; };
 
   $('photoInput').addEventListener('change', (e) => {
     const input = e.target;
@@ -258,12 +198,10 @@
       const problem = await passportProblem(im);
       if (problem) {
         input.value = '';                                             // forget the rejected file
-        photoNote(problem);
         say(problem, 'bad');
         alert(problem);
         return;
       }
-      photoNote('');
       photo = im; $('photoTools').hidden = false; drawPhoto();
       say('Passport photo added.', 'good');
     });
@@ -574,7 +512,24 @@
   modal.addEventListener('click', (e) => { if (e.target === modal) closePreview(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePreview(); });
 
-  $('confirmPdfBtn').addEventListener('click', async () => {
+  // Saves the passport, signature and both card sides to the Drive folder (through the Apps Script).
+  // The sheet then shows "Open" links in the Passport, Signature, Card front and Card back columns.
+  async function uploadImages() {
+    if (!BACKEND_URL || !shots) return;
+    const body = { action: 'upload', phone: $('phoneInput').value.trim(),
+      passport: $('photoImg').hidden ? '' : $('photoImg').src,
+      signature: $('sigImg').hidden ? '' : $('sigImg').src,
+      front: shots.front, back: shots.back };
+    try {
+      const r = await (await fetch(BACKEND_URL, { method: 'POST', body: JSON.stringify(body) })).json();
+      if (r.ok) say('PDF downloaded. Images saved.', 'good');
+      else say('PDF downloaded, but the images were not saved: ' + (r.error || 'try again.'), 'bad');
+    } catch (err) {
+      say('PDF downloaded, but the images could not be saved. Check the internet.', 'bad');
+    }
+  }
+
+  $('confirmPdfBtn').addEventListener('click', () => {
     if (!shots) return;
     const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
     const w = 54, gap = 10, x0 = (210 - (2 * w + gap)) / 2, y = 30;   // real ID card size, side by side
@@ -585,15 +540,9 @@
       pdf.addImage(src, 'PNG', x, y, w, h);
     });
     pdf.save('DS-ID-' + ($('nameInput').value.trim() || 'member').replace(/\s+/g, '-') + '.pdf');
-    const sides = { front: shots.front, back: shots.back, passport: '', signature: '' };
     closePreview();
-    say('PDF downloaded. Saving your pictures...', 'good');
-    // Small files first (passport and signature), then the two large card pictures, so a slow upload cannot lose the passport
-    const small = await sendImages();
-    const big = await sendImages(sides);
-    say('PDF downloaded.' + (small === false || big === false
-      ? ' Some pictures could not be saved online. Check the internet and download again.'
-      : small === true || big === true ? ' Your pictures were saved.' : ''), small === false || big === false ? 'bad' : 'good');
+    say('PDF downloaded. Saving images...', 'good');
+    uploadImages();
   });
   $('printBtn').addEventListener('click', () => { if (!needId()) window.print(); });
 
@@ -601,7 +550,7 @@
   $('resetBtn').addEventListener('click', () => {
     $('idForm').reset();
     $('nameOut').textContent = 'Your name'; $('phoneOut').textContent = 'Phone number';
-    photo = null; $('photoTools').hidden = true; photoNote(''); postNote(''); syncPostLimit();
+    photo = null; $('photoTools').hidden = true;
     $('photoImg').hidden = true; $('photoImg').removeAttribute('src'); $('photoHint').hidden = false;
     $('sigImg').hidden = true; $('sigImg').removeAttribute('src'); $('sigHint').hidden = false;
     sigSrc = null; sigPrep = null; sigFull = null; $('sigTools').hidden = true;
