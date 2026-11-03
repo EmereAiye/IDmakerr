@@ -218,3 +218,8 @@ input[type="range"] { padding: 0; accent-color: #1e88e5; }
 .pad-wrap { margin: 12px 0; overflow: hidden; border: 2px dashed var(--line); border-radius: 12px;
   background: linear-gradient(to bottom, transparent 72%, #cfdcee 72%, #cfdcee calc(72% + 1px), transparent calc(72% + 1px)), #fff; }
 #padCanvas { display: block; width: 100%; height: auto; cursor: crosshair; touch-action: none; }
+
+/* ---------- Passport notice at the top of the photo box ---------- */
+.note { margin: 0; padding: 10px 12px; border-left: 4px solid var(--gold); border-radius: 8px;
+  background: #fff8e1; color: var(--ink); font-size: 0.85rem; line-height: 1.4; }
+.note strong { font-size: 0.95rem; }
