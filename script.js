@@ -7,6 +7,7 @@
   const ID_PREFIX = 'DS';
   const POSTS = ['Choir Master', 'Music Director', 'Lead Vocalist', 'Secretary', 'Treasurer',
     'Talking Drummer', 'Set Drummer', 'Keyboardist', 'Guitarist', 'Instrumentalist', 'Back-up Singer', 'Chorister'];
+  const MAX_POSTS = 2;                                           // a member may hold at most two posts
   const RESERVED = { 'Choir Master': 1, 'Music Director': 2 };   // always 001 and 002; everyone else follows in order of registration
   // ------------------------------------------
 
@@ -81,6 +82,20 @@
     const res = await fetch(BACKEND_URL, { method: 'POST', body: JSON.stringify(d) });
     return res.json();
   }
+  // Send pictures to the Google Drive folder through the script (the member must already be registered).
+  // Returns true = saved, false = failed, null = nothing to send (or test mode)
+  async function sendImages(extra) {
+    if (!BACKEND_URL) return null;
+    const d = Object.assign({ action: 'upload', phone: $('phoneInput').value.trim(),
+      passport: $('photoImg').hidden ? '' : $('photoImg').src,
+      signature: $('sigImg').hidden ? '' : $('sigImg').src }, extra || {});
+    if (!d.passport && !d.signature && !d.front && !d.back) return null;
+    try {
+      const res = await fetch(BACKEND_URL, { method: 'POST', body: JSON.stringify(d) });
+      const r = await res.json();
+      return !!r.ok;
+    } catch (err) { return false; }
+  }
 
   $('registerBtn').addEventListener('click', async () => {
     const d = { name: $('nameInput').value.trim(), phone: $('phoneInput').value.trim(),
@@ -97,15 +112,29 @@
       else {
         showId(r.number);
         celebrate();
-        say(r.existing ? 'This phone number is already registered. Showing the same ID.'
-                       : 'Registered. Preview and download your card.', 'good');
+        const saved = await sendImages();                          // passport and signature go to Google Drive
+        say((r.existing ? 'This phone number is already registered. Showing the same ID.'
+                        : 'Registered. Preview and download your card.') +
+            (saved === true ? ' Your pictures were saved.'
+             : saved === false ? ' Your pictures could not be saved yet. They will be sent again when you download the PDF.' : ''), 'good');
       }
     } catch (err) {
       say('Could not reach the online list. Check the internet and try again.', 'bad');
     }
     btn.disabled = false; btn.textContent = 'Register & get ID';
   });
+  const postMsg = $('postMsg');
+  const postNote = (m) => { postMsg.textContent = m || ''; postMsg.hidden = !m; };
+  // When two posts are ticked, the other boxes are switched off so a third cannot be chosen
+  function syncPostLimit() {
+    const full = getPosts().length >= MAX_POSTS;
+    chipBox.querySelectorAll('input').forEach((i) => {
+      i.disabled = full && !i.checked;
+      i.parentElement.classList.toggle('off', i.disabled);
+    });
+  }
   chipBox.addEventListener('change', (e) => {
+    postNote('');
     // One person cannot be both Choir Master and Music Director (each has its own number)
     if (e.target.checked && RESERVED[e.target.value]) {
       chipBox.querySelectorAll('input:checked').forEach((i) => {
@@ -115,6 +144,13 @@
         }
       });
     }
+    // Never more than two posts
+    if (getPosts().length > MAX_POSTS) {
+      e.target.checked = false;
+      postNote('You can choose only ' + MAX_POSTS + ' posts. Untick one first to choose another.');
+      say('You can choose only ' + MAX_POSTS + ' posts.', 'bad');
+    }
+    syncPostLimit();
     unregister(); refreshCard();
   });
   $('phoneInput').addEventListener('input', unregister);
@@ -149,38 +185,60 @@
     $('photoImg').hidden = false; $('photoHint').hidden = true;
     updateMeter();
   }
-  // ---- Passport check: ordinary photos are rejected ----
-  // plainShare: how much of the top and side edges must be one plain colour (a passport has a plain wall behind it)
-  // colourGap: how far a colour may drift and still count as "the same" (raise it if real passports get rejected)
+  // ---- Passport check: only a passport photo on a WHITE background is accepted ----
+  // whiteMin / whiteSpread: a pixel counts as white when R, G and B are all at least whiteMin and close to each other
+  // whiteShare: how much of the top and side edges must be white (hair or a shoulder may touch the edge)
   // faceMin: the face must be at least this share of the photo's width (head and shoulders, not a far-away shot)
-  const PASSPORT = { minSide: 200, plainShare: 0.7, colourGap: 70, faceMin: 0.22 };
-  const NOT_PASSPORT = 'This does not look like a passport photo. Use one that faces the camera, shows head and shoulders, ' +
-    'has a plain background, and is in garment.';
+  // ratio: width / height must look like a portrait passport (35 x 45 mm is about 0.78); wide or very tall pictures are rejected
+  const PASSPORT = { minSide: 200, whiteMin: 195, whiteSpread: 45, whiteShare: 0.75, faceMin: 0.25,
+                     ratioMin: 0.62, ratioMax: 1.05, bottomFill: 0.4, headFill: 0.3, subjectMin: 0.2 };
+  const NOT_WHITE = 'REJECTED: the background is not white. A passport photo must be taken against a plain white background.';
+  const NOT_PASSPORT = 'REJECTED: this is not a passport photo. Upload a passport-style picture only: head and shoulders, ' +
+    'facing the camera, in garment, on a white background. Full pictures and ordinary pictures are not accepted.';
 
-  function plainBackground(px, w, h) {
-    const band = 0.12, vals = [];
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const top = y < h * band, side = (x < w * band || x >= w * (1 - band)) && y < h * 0.7;
-        if (top || side) { const i = (y * w + x) * 4; vals.push([px[i], px[i + 1], px[i + 2]]); }
-      }
+  // Share of pixels in a rectangle (fractions of width and height) that are NOT white
+  function nonWhiteShare(mask, w, h, x0, x1, y0, y1) {
+    let n = 0, t = 0;
+    for (let y = Math.floor(h * y0); y < Math.ceil(h * y1); y++) {
+      for (let x = Math.floor(w * x0); x < Math.ceil(w * x1); x++) { t++; if (!mask[y * w + x]) n++; }
     }
-    const med = (c) => { const a = vals.map((v) => v[c]).sort((p, q) => p - q); return a[a.length >> 1]; };
-    const m = [med(0), med(1), med(2)];
-    let near = 0;
-    vals.forEach((v) => { if (Math.hypot(v[0] - m[0], v[1] - m[1], v[2] - m[2]) < PASSPORT.colourGap) near++; });
-    return near / vals.length;
+    return t ? n / t : 0;
   }
 
   async function passportProblem(im) {
-    if (Math.min(im.width, im.height) < PASSPORT.minSide) return 'This photo is too small or blurry. Choose a clearer passport photo.';
-    if (im.width > im.height * 1.05) return NOT_PASSPORT;            // wide pictures are ordinary photos
+    if (Math.min(im.width, im.height) < PASSPORT.minSide) return 'REJECTED: this photo is too small or blurry. Choose a clearer passport photo.';
+    const ratio = im.width / im.height;
+    if (ratio < PASSPORT.ratioMin || ratio > PASSPORT.ratioMax) return NOT_PASSPORT;   // wide or full-length pictures
+
+    const w = 96, h = Math.max(1, Math.round(96 * im.height / im.width));
     const c = document.createElement('canvas');
-    c.width = 96; c.height = Math.max(1, Math.round(96 * im.height / im.width));
+    c.width = w; c.height = h;
     const g = c.getContext('2d');
-    g.drawImage(im, 0, 0, c.width, c.height);
-    if (plainBackground(g.getImageData(0, 0, c.width, c.height).data, c.width, c.height) < PASSPORT.plainShare) return NOT_PASSPORT;
-    if ('FaceDetector' in window) {                                    // only some browsers have this; the checks above still apply without it
+    g.drawImage(im, 0, 0, w, h);
+    const px = g.getImageData(0, 0, w, h).data;
+    const white = new Uint8Array(w * h);                              // 1 = white pixel
+    for (let i = 0; i < w * h; i++) {
+      const r = px[i * 4], gr = px[i * 4 + 1], b = px[i * 4 + 2];
+      white[i] = Math.min(r, gr, b) >= PASSPORT.whiteMin && Math.max(r, gr, b) - Math.min(r, gr, b) <= PASSPORT.whiteSpread ? 1 : 0;
+    }
+
+    // 1. White background: the top strip and the upper left and right edges must be white
+    let edge = 0, edgeWhite = 0;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const top = y < h * 0.1, side = (x < w * 0.12 || x >= w * 0.88) && y < h * 0.55;
+        if (top || side) { edge++; edgeWhite += white[y * w + x]; }
+      }
+    }
+    if (edgeWhite / edge < PASSPORT.whiteShare) return NOT_WHITE;
+
+    // 2. Head and shoulders: a head in the top middle, and shoulders or garment filling the bottom
+    if (nonWhiteShare(white, w, h, 0, 1, 0, 1) < PASSPORT.subjectMin) return NOT_PASSPORT;        // person too small or missing
+    if (nonWhiteShare(white, w, h, 0.3, 0.7, 0.08, 0.4) < PASSPORT.headFill) return NOT_PASSPORT;  // no head where it should be
+    if (nonWhiteShare(white, w, h, 0.1, 0.9, 0.88, 1) < PASSPORT.bottomFill) return NOT_PASSPORT;  // no shoulders: full-length or cut-out picture
+
+    // 3. Exactly one face, large enough (only in browsers that have a face detector; the checks above always apply)
+    if ('FaceDetector' in window) {
       try {
         const faces = await new FaceDetector({ fastMode: true, maxDetectedFaces: 5 }).detect(im);
         if (faces.length !== 1) return NOT_PASSPORT;
@@ -190,16 +248,22 @@
     return '';
   }
 
+  // The rejection reason is shown at the top of the passport box, above the upload button
+  const photoError = $('photoError');
+  const photoNote = (m) => { photoError.textContent = m || ''; photoError.hidden = !m; };
+
   $('photoInput').addEventListener('change', (e) => {
     const input = e.target;
     readImage(input.files[0], async (im) => {
       const problem = await passportProblem(im);
       if (problem) {
         input.value = '';                                             // forget the rejected file
+        photoNote(problem);
         say(problem, 'bad');
         alert(problem);
         return;
       }
+      photoNote('');
       photo = im; $('photoTools').hidden = false; drawPhoto();
       say('Passport photo added.', 'good');
     });
@@ -510,7 +574,7 @@
   modal.addEventListener('click', (e) => { if (e.target === modal) closePreview(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePreview(); });
 
-  $('confirmPdfBtn').addEventListener('click', () => {
+  $('confirmPdfBtn').addEventListener('click', async () => {
     if (!shots) return;
     const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
     const w = 54, gap = 10, x0 = (210 - (2 * w + gap)) / 2, y = 30;   // real ID card size, side by side
@@ -521,8 +585,15 @@
       pdf.addImage(src, 'PNG', x, y, w, h);
     });
     pdf.save('DS-ID-' + ($('nameInput').value.trim() || 'member').replace(/\s+/g, '-') + '.pdf');
+    const sides = { front: shots.front, back: shots.back, passport: '', signature: '' };
     closePreview();
-    say('PDF downloaded.', 'good');
+    say('PDF downloaded. Saving your pictures...', 'good');
+    // Small files first (passport and signature), then the two large card pictures, so a slow upload cannot lose the passport
+    const small = await sendImages();
+    const big = await sendImages(sides);
+    say('PDF downloaded.' + (small === false || big === false
+      ? ' Some pictures could not be saved online. Check the internet and download again.'
+      : small === true || big === true ? ' Your pictures were saved.' : ''), small === false || big === false ? 'bad' : 'good');
   });
   $('printBtn').addEventListener('click', () => { if (!needId()) window.print(); });
 
@@ -530,7 +601,7 @@
   $('resetBtn').addEventListener('click', () => {
     $('idForm').reset();
     $('nameOut').textContent = 'Your name'; $('phoneOut').textContent = 'Phone number';
-    photo = null; $('photoTools').hidden = true;
+    photo = null; $('photoTools').hidden = true; photoNote(''); postNote(''); syncPostLimit();
     $('photoImg').hidden = true; $('photoImg').removeAttribute('src'); $('photoHint').hidden = false;
     $('sigImg').hidden = true; $('sigImg').removeAttribute('src'); $('sigHint').hidden = false;
     sigSrc = null; sigPrep = null; sigFull = null; $('sigTools').hidden = true;

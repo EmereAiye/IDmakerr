@@ -31,8 +31,9 @@
     <fieldset>
       <legend><b>2</b> Your place in the choir</legend>
       <div class="field">
-        <span class="lbl">Post in choir <span class="hint">(tick all that apply)</span></span>
+        <span class="lbl">Post in choir <span class="hint">(choose up to 2)</span></span>
         <div id="postChips" class="chips"></div>
+        <p id="postMsg" class="field-msg" hidden></p>
       </div>
       <label>Member ID <span class="hint">(made when you register)</span>
         <input type="text" id="idInput" readonly value="Not registered yet">
@@ -41,7 +42,8 @@
 
     <fieldset>
       <legend><b>3</b> Photo and signature</legend>
-      <p class="note"><strong>Passport should be in garment.</strong><br>Use a passport photo: facing the camera, head and shoulders, plain background. Ordinary pictures are not accepted.</p>
+      <p class="note"><strong>Passport photo only, on a WHITE background, in garment.</strong><br>Head and shoulders, facing the camera. A photo with any other background, a full picture or an ordinary picture will be rejected.</p>
+      <p id="photoError" class="photo-error" role="alert" hidden></p>
       <label>Passport photo
         <input type="file" id="photoInput" accept="image/*">
       </label>
